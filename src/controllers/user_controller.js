@@ -56,6 +56,8 @@ export const createSublet = (req, res) => {
   s.email = req.body.email;
   s.name = req.body.name;
   s.uid = s.id;
+  s.latitude = req.body.latitude;
+  s.longitude = req.body.longitude;
 
   User.findOneAndUpdate(
     { email: s.email },
@@ -71,10 +73,10 @@ export const createSublet = (req, res) => {
 
 export const removePost = (req, res) => {
   User.findOneAndUpdate(
-    { email: req.email },
-    { $pull: { posts: req.params.id } },
+    { email: req.body.email },
+    { $pull: { posts: req.body.id } },
   ).then(() => {
-    Sublet.findById(req.params.id).remove().exec().then(() => {
+    Sublet.findById(req.body.id).remove().exec().then(() => {
       res.json({ status: 'success' });
     });
   }).catch((err) => {
@@ -83,9 +85,10 @@ export const removePost = (req, res) => {
 };
 
 export const addLiked = (req, res) => {
+  console.log('pushed id', req.body.id, req.body.email);
   User.findOneAndUpdate(
-    { email: req.params.email },
-    { $push: { liked: req.params.id } },
+    { email: req.body.email },
+    { $push: { liked: req.body.id } }, { new: true },
   ).then(() => {
     res.json({ status: 'success' });
   }).catch((err) => {
@@ -95,8 +98,8 @@ export const addLiked = (req, res) => {
 
 export const removeLiked = (req, res) => {
   User.findOneAndUpdate(
-    { email: req.params.email },
-    { $pull: { liked: req.params.id } },
+    { email: req.body.email },
+    { $pull: { liked: req.body.id } },
   ).then(() => {
     res.json({ status: 'success' });
   }).catch((err) => {
@@ -106,8 +109,8 @@ export const removeLiked = (req, res) => {
 
 export const addSeen = (req, res) => {
   User.findOneAndUpdate(
-    { email: req.params.email },
-    { $push: { seen: req.params.id } },
+    { email: req.body.email },
+    { $push: { seen: req.body.id } },
   ).then(() => {
     res.json({ status: 'success' });
   }).catch((err) => {
