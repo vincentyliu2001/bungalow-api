@@ -42,7 +42,7 @@ router.route('/sublets/nextBatch')
 router.route('/loadInitialState')
   .post(requireAuth, SubletsController.loadInitialState);
 
-router.route('/sublets/:subletID')
+router.route('/sublets/:id')
   .get((req, res) => {
     SubletsController.getSublet(req, res);
   })

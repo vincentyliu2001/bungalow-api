@@ -7,8 +7,8 @@ export const getSublets = (req, res) => {
   });
 };
 export const getSublet = (req, res) => {
-  console.log(req.params.subletID);
-  Sublet.findById(req.params.subletID).then((subletID) => {
+  console.log(req.params.id);
+  Sublet.findById(req.params.id).then((subletID) => {
     res.json(subletID);
   }).catch((error) => {
     res.send(`error: ${error}`);
@@ -74,7 +74,7 @@ export const updatePost = (req, res) => {
     latitude: req.body.latitude,
     longitude: req.body.longitude,
   };
-  Sublet.findOneAndUpdate({ _id: req.params.subletId }, update).then(() => {
+  Sublet.findOneAndUpdate({ _id: req.params.id }, update).then(() => {
     res.json(update);
   });
 };
