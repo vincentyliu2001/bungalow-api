@@ -88,7 +88,7 @@ export const addLiked = (req, res) => {
   console.log('pushed id', req.body.id, req.body.email);
   User.findOneAndUpdate(
     { email: req.body.email },
-    { $push: { liked: req.body.id } }, { new: true },
+    { $push: { liked: req.body.id } },
   ).then(() => {
     res.json({ status: 'success' });
   }).catch((err) => {
