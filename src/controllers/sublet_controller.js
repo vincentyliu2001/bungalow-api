@@ -34,14 +34,14 @@ export const getNewHomeItems = (req, res) => {
 /* ********************************************************************************* */
 const getSubletsWithIds = async (notSeenIds, ids) => {
   const notSeen = Sublet.find({ id: { $nin: notSeenIds } }).sort('-createdAt');
-  return notSeen.find({ id: { $in: ids } });
+  return notSeen.find({ id: { $in: ids } }).then();
 };
 
 const getInitSublets = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({ email: req.body.email }).then();
   console.log('USER!!!!!!!!!!!!!!', user);
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
-  const allSublets = await Sublet.find();
+  const allSublets = await Sublet.find().then();
   return {
     liked: getSubletsWithIds(user.seen, user.liked || []) || [],
     home: homeSublets,
