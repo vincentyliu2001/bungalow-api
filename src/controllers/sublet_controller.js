@@ -32,7 +32,7 @@ export const getNewHomeItems = (req, res) => {
 
 /* ********************************************************************************* */
 const getSubletsWithIds = async (ids) => {
-  return Sublet.find().sort('-createdAt');
+  return Sublet.find().where('id').in(ids).exec();
 };
 
 const getInitSublets = async (req, res) => {
