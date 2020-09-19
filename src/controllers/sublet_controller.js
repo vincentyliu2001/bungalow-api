@@ -16,15 +16,14 @@ export const getSublet = (req, res) => {
 };
 
 /* ********************************************************************************* */
-const getHomePageSublets = async (amount, notSeenIds) => {
-  const sublets = await Sublet.find({ id: { $nin: notSeenIds } }).sort('-createdAt');
+const getHomePageSublets = async (amount, seenIds) => {
+  const sublets = await Sublet.find({ id: { $nin: seenIds } }).sort('-createdAt').then();
   return sublets.slice(0, amount || 10);
 };
 
 export const getNewHomeItems = (req, res) => {
   User.findOne({ email: req.body.email }).then((user) => {
-    const ids = user.seen ? user.seen.map((sublet) => { return sublet.id; }) : [];
-    getHomePageSublets(req.body.amount, ids).then((sublets) => {
+    getHomePageSublets(req.body.amount, user.seen).then((sublets) => {
       res.json(sublets);
     });
   });
@@ -33,9 +32,7 @@ export const getNewHomeItems = (req, res) => {
 
 /* ********************************************************************************* */
 const getSubletsWithIds = async (ids) => {
-  const ret = await Sublet.find({ id: { $in: ids } }).sort('-createdAt').then();
-  console.log('PASSED PARAMS TO GET SUBLEST W IDS,', seenIds, ids, ret);
-  return ret;
+  return Sublet.find({ id: { $in: ids } }).sort('-createdAt').then();
 };
 
 const getInitSublets = async (req, res) => {
