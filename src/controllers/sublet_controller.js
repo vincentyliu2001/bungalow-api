@@ -23,8 +23,8 @@ const getHomePageSublets = async (amount, user) => {
 };
 
 export const getNewHomeItems = (req, res) => {
-  User.find({ email: req.params.email }).then((user) => {
-    getHomePageSublets(req.params.amount, user).then((sublets) => {
+  User.find({ email: req.body.email }).then((user) => {
+    getHomePageSublets(req.body.amount, user).then((sublets) => {
       res.json(sublets);
     });
   });
@@ -33,8 +33,8 @@ export const getNewHomeItems = (req, res) => {
 
 /* ********************************************************************************* */
 const getInitSublets = async (req, res) => {
-  const user = await User.find({ email: req.params.email });
-  const homeSublets = await getHomePageSublets(req.params.amount, user);
+  const user = await User.find({ email: req.body.email });
+  const homeSublets = await getHomePageSublets(req.body.amount, user);
   const allSublets = await Sublet.find();
   return {
     liked: user.liked || [],
@@ -74,7 +74,7 @@ export const updatePost = (req, res) => {
     latitude: req.body.latitude,
     longitude: req.body.longitude,
   };
-  Sublet.findOneAndUpdate({ _id: req.params.id }, update).then(() => {
+  Sublet.findOneAndUpdate({ _id: req.body.id }, update).then(() => {
     res.json(update);
   });
 };
