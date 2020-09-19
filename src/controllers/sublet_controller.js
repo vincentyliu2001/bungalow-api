@@ -32,8 +32,8 @@ export const getNewHomeItems = (req, res) => {
 /* ********************************************************************************* */
 
 /* ********************************************************************************* */
-const getSubletsWithIds = async (seenIds, ids) => {
-  const ret = await Sublet.find({ id: { $nin: seenIds, $in: ids } }).sort('-createdAt').then();
+const getSubletsWithIds = async (ids) => {
+  const ret = await Sublet.find({ id: { $in: ids } }).sort('-createdAt').then();
   console.log('PASSED PARAMS TO GET SUBLEST W IDS,', seenIds, ids, ret);
   return ret;
 };
@@ -43,8 +43,8 @@ const getInitSublets = async (req, res) => {
   console.log('USER!!!!!!!!!!!!!!', user);
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find().then();
-  const likedSublets = await getSubletsWithIds(user.seen || [], user.liked || []);
-  const addedSublets = await getSubletsWithIds(user.seen || [], user.posts || []);
+  const likedSublets = await getSubletsWithIds(user.liked);
+  const addedSublets = await getSubletsWithIds(user.posts);
   console.log('AFTER MONGOSE QUERIES: ', addedSublets);
   return {
     liked: likedSublets,
