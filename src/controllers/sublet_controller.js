@@ -22,7 +22,7 @@ const getHomePageSublets = async (amount, ids) => {
 };
 
 export const getNewHomeItems = (req, res) => {
-  User.find({ email: req.body.email }).then((user) => {
+  User.findOne({ email: req.body.email }).then((user) => {
     const ids = user.seen ? user.seen.map((sublet) => { return sublet.id; }) : [];
     getHomePageSublets(req.body.amount, ids).then((sublets) => {
       res.json(sublets);
@@ -38,7 +38,7 @@ const getSubletsWithIds = async (notSeenIds, ids) => {
 };
 
 const getInitSublets = async (req, res) => {
-  const user = await User.find({ email: req.body.email });
+  const user = User.findOne({ email: req.body.email }, 'seen liked posts');
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find();
   return {
