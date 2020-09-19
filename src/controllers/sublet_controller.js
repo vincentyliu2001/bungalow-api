@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import Sublet from '../models/sublet_model';
 import User from '../models/user_model';
 
@@ -17,7 +19,7 @@ export const getSublet = (req, res) => {
 
 /* ********************************************************************************* */
 const getHomePageSublets = async (amount, seenIds) => {
-  const sublets = await Sublet.find({ _id: { $nin: seenIds } }).sort('-createdAt').then();
+  const sublets = await Sublet.find({ id: { $nin: seenIds } }).sort('-createdAt').then();
   return sublets.slice(0, amount || 10);
 };
 
@@ -32,7 +34,7 @@ export const getNewHomeItems = (req, res) => {
 
 /* ********************************************************************************* */
 const getSubletsWithIds = async (ids) => {
-  return Sublet.find().where('id').in(ids).exec();
+  return Sublet.find({ _id: { $in: ids.map((id) => { return mongoose.Types.ObjectId(id); }) } }).sort('-createdAt');
 };
 
 const getInitSublets = async (req, res) => {
