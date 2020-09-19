@@ -42,10 +42,10 @@ const getInitSublets = async (req, res) => {
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find().then();
   return {
-    liked: getSubletsWithIds(user.seen, user.liked || []) || [],
+    liked: await getSubletsWithIds(user.seen || [], user.liked || []),
     home: homeSublets,
     seen: user.seen || [],
-    added: getSubletsWithIds(user.seen, user.posts || []) || [],
+    added: await getSubletsWithIds(user.seen || [], user.posts || []),
     all: allSublets || [],
   };
 };
