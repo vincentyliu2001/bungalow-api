@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 });
 
 router.route('/access')
-  .post(requireAuth, UserController.signin);
+  .post(UserController.signin);
 
 router.route('/users/:email').get((req, res) => {
   UserController.getUser(req, res);
