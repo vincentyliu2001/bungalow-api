@@ -1,6 +1,7 @@
 import jwt from 'jwt-simple';
 import dotenv from 'dotenv';
 import User from '../models/user_model';
+import Sublet from '../models/sublet_model';
 import verifyToken from '../services/verify_token';
 
 dotenv.config({ silent: true });
@@ -38,5 +39,78 @@ export const getUser = (req, res) => {
     res.json(user);
   }).catch((error) => {
     res.send(`error: ${error}`);
+  });
+};
+
+export const createSublet = (req, res) => {
+  const s = new Sublet();
+  s.title = req.body.title;
+  s.address = req.body.address;
+  s.description = req.body.description;
+  s.bathrooms = req.body.bathrooms;
+  s.price = req.body.price;
+  s.footage = req.body.footage;
+  s.bedrooms = req.body.bedrooms;
+  s.phone = req.body.phone;
+  s.images = req.body.images;
+  s.email = req.body.email;
+  s.name = req.body.name;
+  s.uid = s.id;
+
+  User.findOneAndUpdate(
+    { email: s.email },
+    { $push: { posts: s.id, seen: s.id } },
+  ).then(() => {
+    s.save().then(() => {
+      res.json(s);
+    });
+  }).catch((err) => {
+    console.log('Failed to add New Post: ', err);
+  });
+};
+
+export const removePost = (req, res) => {
+  User.findOneAndUpdate(
+    { email: req.email },
+    { $pull: { posts: req.id } },
+  ).then(() => {
+    Sublet.findById(req.params.subletId).remove().exec().then(() => {
+      res.json({ status: 'success' });
+    });
+  }).catch((err) => {
+    console.log('Failed to Remove Post: ', err);
+  });
+};
+
+export const addLiked = (req, res) => {
+  User.findOneAndUpdate(
+    { email: req.email },
+    { $push: { liked: req.id } },
+  ).then(() => {
+    res.json({ status: 'success' });
+  }).catch((err) => {
+    console.log('Failed to Add to Liked: ', err);
+  });
+};
+
+export const removeLiked = (req, res) => {
+  User.findOneAndUpdate(
+    { email: req.email },
+    { $pull: { liked: req.id } },
+  ).then(() => {
+    res.json({ status: 'success' });
+  }).catch((err) => {
+    console.log('Failed to Remove Post: ', err);
+  });
+};
+
+export const addSeen = (req, res) => {
+  User.findOneAndUpdate(
+    { email: req.email },
+    { $push: { seen: req.id } },
+  ).then(() => {
+    res.json({ status: 'success' });
+  }).catch((err) => {
+    console.log('Failed to Add to Liked: ', err);
   });
 };

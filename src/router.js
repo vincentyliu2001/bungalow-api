@@ -8,17 +8,40 @@ const router = Router();
 
 /// your routes will go here
 router.get('/', (req, res) => {
-  res.json({ message: 'welcome to our blog api!' });
+  res.json({ message: 'Welcome to Bungalow Backend!' });
 });
-router.post('/access', UserController.signin);
+
+router.route('/access')
+  .post(requireAuth, UserController.signin);
+
 router.route('/users/:email').get((req, res) => {
   UserController.getUser(req, res);
 });
+
 router.route('/sublets')
-  .post(requireAuth, SubletsController.createSublet)
   .get(requireAuth, SubletsController.getSublets);
-router.post('/loadInitialState', SubletsController.loadInitialState);
-router.post('/getNewHomeItems', SubletsController.getNewHomeItems);
+
+router.route('/sublets/addPost')
+  .post(requireAuth, UserController.createSublet);
+
+router.route('/sublets/removePost')
+  .post(requireAuth, UserController.removePost);
+
+router.route('/sublets/addLiked')
+  .post(requireAuth, UserController.addLiked);
+
+router.route('/sublets/removeLiked')
+  .post(requireAuth, UserController.removeLiked);
+
+router.route('/sublets/addSeen')
+  .post(requireAuth, UserController.addSeen);
+
+router.route('/sublets/nextBatch')
+  .post(requireAuth, SubletsController.getNewHomeItems);
+
+router.route('/loadInitialState')
+  .post(requireAuth, SubletsController.loadInitialState);
+
 router.route('/sublets/:subletID')
   .get((req, res) => {
     SubletsController.getSublet(req, res);
@@ -29,4 +52,5 @@ router.route('/sublets/:subletID')
   .delete(requireAuth, (req, res) => {
     SubletsController.deleteSublet(req, res);
   });
+
 export default router;
