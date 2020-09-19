@@ -16,8 +16,8 @@ export const getSublet = (req, res) => {
 };
 
 /* ********************************************************************************* */
-const getHomePageSublets = async (amount, ids) => {
-  const sublets = await Sublet.find({ id: { $nin: ids } }).sort('-createdAt');
+const getHomePageSublets = async (amount, notSeenIds) => {
+  const sublets = await Sublet.find({ id: { $nin: notSeenIds } }).sort('-createdAt');
   return sublets.slice(0, amount || 10);
 };
 
