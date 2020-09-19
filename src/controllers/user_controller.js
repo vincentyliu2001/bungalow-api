@@ -85,9 +85,10 @@ export const removePost = (req, res) => {
 };
 
 export const addLiked = (req, res) => {
+  console.log('pushed id', req.body.id, req.body.email);
   User.findOneAndUpdate(
     { email: req.body.email },
-    { $push: { liked: req.body.id } },
+    { $push: { liked: req.body.id } }, { new: true },
   ).then(() => {
     res.json({ status: 'success' });
   }).catch((err) => {
