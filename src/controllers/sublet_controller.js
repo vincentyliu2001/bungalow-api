@@ -39,14 +39,13 @@ const getSubletsWithIds = async (notSeenIds, ids) => {
 
 const getInitSublets = async (req, res) => {
   const user = await User.find({ email: req.body.email });
-  const ids = user.seen ? user.seen.map((sublet) => { return sublet.id; }) : [];
   const homeSublets = await getHomePageSublets(req.body.amount, ids);
   const allSublets = await Sublet.find();
   return {
-    liked: getSubletsWithIds(ids, user.liked || []) || [],
+    liked: getSubletsWithIds(user.seen, user.liked || []) || [],
     home: homeSublets,
     seen: user.seen || [],
-    added: getSubletsWithIds(ids, user.posts || []) || [],
+    added: getSubletsWithIds(user.seen, user.posts || []) || [],
     all: allSublets || [],
   };
 };
