@@ -38,7 +38,8 @@ const getSubletsWithIds = async (notSeenIds, ids) => {
 };
 
 const getInitSublets = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email }).toArray();
+  const user = await User.findOne({ email: req.body.email });
+  console.log('USER!!!!!!!!!!!!!!', user);
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find();
   return {
