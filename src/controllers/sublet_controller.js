@@ -17,7 +17,7 @@ export const getSublet = (req, res) => {
 
 /* ********************************************************************************* */
 const getHomePageSublets = async (amount, seenIds) => {
-  const sublets = await Sublet.find({ id: { $nin: seenIds } }).sort('-createdAt').then();
+  const sublets = await Sublet.find({ _id: { $nin: seenIds } }).sort('-createdAt').then();
   return sublets.slice(0, amount || 10);
 };
 
@@ -32,7 +32,7 @@ export const getNewHomeItems = (req, res) => {
 
 /* ********************************************************************************* */
 const getSubletsWithIds = async (ids) => {
-  return Sublet.find({ id: { $in: ids } }).sort('-createdAt').then();
+  return Sublet.find({ _id: { $in: ids } }).sort('-createdAt').then();
 };
 
 const getInitSublets = async (req, res) => {
