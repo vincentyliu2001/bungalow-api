@@ -39,7 +39,7 @@ const getSubletsWithIds = async (notSeenIds, ids) => {
 
 const getInitSublets = async (req, res) => {
   const user = await User.find({ email: req.body.email });
-  const homeSublets = await getHomePageSublets(req.body.amount, ids);
+  const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find();
   return {
     liked: getSubletsWithIds(user.seen, user.liked || []) || [],
