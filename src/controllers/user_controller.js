@@ -88,7 +88,7 @@ export const addLiked = (req, res) => {
   console.log('pushed id', req.body.id, req.body.email);
   User.findOneAndUpdate(
     { email: req.body.email },
-    { $push: { liked: req.body.id } }, { new: true },
+    { $addToSet: { liked: req.body.id } },
   ).then(() => {
     res.json({ status: 'success' });
   }).catch((err) => {
@@ -110,7 +110,7 @@ export const removeLiked = (req, res) => {
 export const addSeen = (req, res) => {
   User.findOneAndUpdate(
     { email: req.body.email },
-    { $push: { seen: req.body.id } },
+    { $addToSet: { seen: req.body.id } },
   ).then(() => {
     res.json({ status: 'success' });
   }).catch((err) => {
