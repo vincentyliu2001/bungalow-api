@@ -43,12 +43,14 @@ const getInitSublets = async (req, res) => {
   console.log('USER!!!!!!!!!!!!!!', user);
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find().then();
-
+  const likedSublets = await getSubletsWithIds(user.seen || [], user.liked || []);
+  const addedSublets = await getSubletsWithIds(user.seen || [], user.posts || []);
+  console.log('AFTER MONGOSE QUERIES: ', addedSublets);
   return {
-    liked: await getSubletsWithIds(user.seen || [], user.liked || []),
+    liked: likedSublets,
     home: homeSublets,
     seen: user.seen || [],
-    added: await getSubletsWithIds(user.seen || [], user.posts || []),
+    added: addedSublets,
     all: allSublets || [],
   };
 };
