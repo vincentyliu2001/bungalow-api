@@ -19,7 +19,7 @@ export const getSublet = (req, res) => {
 
 /* ********************************************************************************* */
 const getHomePageSublets = async (amount, seenIds) => {
-  const sublets = Sublet.find({
+  const sublets = await Sublet.find({
     _id: {
       $nin: seenIds.map((id) => {
         return mongoose.Types.ObjectId(id); // eslint-disable-line
