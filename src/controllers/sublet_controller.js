@@ -33,7 +33,9 @@ export const getNewHomeItems = (req, res) => {
 
 /* ********************************************************************************* */
 const getSubletsWithIds = async (seenIds, ids) => {
-  return Sublet.find({ id: { $nin: seenIds, $in: ids } }).sort('-createdAt').then();
+  const ret = await Sublet.find({ id: { $nin: seenIds, $in: ids } }).sort('-createdAt').then();
+  console.log('PASSED PARAMS TO GET SUBLEST W IDS,', seenIds, ids, ret);
+  return ret;
 };
 
 const getInitSublets = async (req, res) => {
@@ -41,6 +43,7 @@ const getInitSublets = async (req, res) => {
   console.log('USER!!!!!!!!!!!!!!', user);
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find().then();
+
   return {
     liked: await getSubletsWithIds(user.seen || [], user.liked || []),
     home: homeSublets,
