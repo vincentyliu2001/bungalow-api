@@ -56,6 +56,8 @@ export const createSublet = (req, res) => {
   s.email = req.body.email;
   s.name = req.body.name;
   s.uid = s.id;
+  s.latitude = req.body.latitude;
+  s.longitude = req.body.longitude;
 
   User.findOneAndUpdate(
     { email: s.email },
