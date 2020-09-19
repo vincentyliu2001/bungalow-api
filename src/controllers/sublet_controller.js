@@ -49,9 +49,9 @@ const getInitSublets = async (req, res) => {
   return {
     liked: likedSublets,
     home: homeSublets,
-    seen: user.seen || [],
+    seen: user.seen,
     added: addedSublets,
-    all: allSublets || [],
+    all: allSublets,
   };
 };
 
