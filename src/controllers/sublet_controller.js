@@ -80,6 +80,7 @@ const getHomePageSublets = async (amount, seenIds, filters) => {
     return getHomeSubletById(id);
   });
 
+  console.log("WHAT IS FOLLOWING THIS TEXT:", homes);
   return homes.slice(0, amount || 10);
 };
 
