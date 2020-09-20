@@ -117,3 +117,14 @@ export const addSeen = (req, res) => {
     console.log('Failed to Add to Liked: ', err);
   });
 };
+
+export const addFilter = (req, res) => {
+  User.findOne({ email: req.body.email }).then((user) => {
+    user.filters = req.body;
+    user.save().then(() => {
+      res.json({ status: 'success' });
+    });
+  }).catch((err) => {
+    console.log('Failed to Add to Liked: ', err);
+  });
+};

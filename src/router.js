@@ -18,6 +18,10 @@ router.route('/users/:email').get((req, res) => {
   UserController.getUser(req, res);
 });
 
+router.route('/users/filters').get((req, res) => {
+  UserController.addFilter(req, res);
+});
+
 router.route('/sublets')
   .get(requireAuth, SubletsController.getSublets);
 

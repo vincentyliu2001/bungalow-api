@@ -1,14 +1,17 @@
 import Algorithmia
 import copy
-import random, string
+import random, string, math
 
 example_input = {
     "sublet": {
-        "name": 'joe',
-        "sqft": 1000,
-        "price": {600,1000},
-        "bedroom": 3.0,
-        "coordinates": (75, 30),
+    "name": 'joe',
+    "sqft": 1000,
+    "lowPrice": 600,
+    "highPrice": 100,
+    "bedroom": 3.0,
+    "lat": 75,
+    "lon": 30,
+    "range": 20
     },
     "subleasers": [
         {
@@ -17,7 +20,9 @@ example_input = {
             "price": 900,
             "bedroom": 3.0,
             "address": '2918 Ravensport Dr',
-            "coordinates": (75, 30.001),
+            "lat": 75,
+            "lon": 30,
+
         },
         {
             "name": 'karen',
@@ -25,7 +30,8 @@ example_input = {
             "price": 1100,
             "bedroom": 4.0,
             "address": '2626 Salado Dr',
-            "coordinates": (75.042, 30.001),
+            "lat": 75,
+            "lon": 30,
         },
         {
         "name": 'pam',
@@ -33,7 +39,8 @@ example_input = {
         "price" : 625,
         "bedroom" : 2.0,
         "address": '4734 Burclare Ct',
-        "coordinates" : (74.998, 30.007),
+        "lat": 75,
+        "lon": 30,
         }
     ],
     "scoring_weights": {
@@ -42,6 +49,7 @@ example_input = {
         "bedroom": 1.0,
         "coordinates": 1.0,
         "amenities": 0.3,
+        "hospital": 1,
     }
 }
 
@@ -59,6 +67,8 @@ def apply(input):
         "bedroom": 1.0,
         "coordinates": 1.0,
          "amenities": 0.3,
+         "hospital" : 1,
+         "range" : 20,
     }
     # overwrite the weights if given by user
     if "scoring_weights" in input:
@@ -71,9 +81,9 @@ def apply(input):
     for sublease in input["subleasers"]:
             score = scoring_function(weights, input["sublet"], sublease)
             if score >= 4:
-                scoring_list[sublease["name"]] = score
+                scoring_list[sublease["address"]] = score
 
-    scoring_list.sort(reverse=True)
+    sorted_list = sorted(scoring_list.items(), key=lambda x: x[1], reverse=True)
 
 
 
@@ -91,25 +101,34 @@ def overwriteWeights(default, new):
 
     return rVal
 
-def scoring_function(weights, sublet, sublease):
+def coords_distance(lat1, lon1, lat2, lon2):
+    R = 3958.8 # miles
 
-    ss = SnowballStemmer("english")
+    dlon = lon2 - lon1
+
+    dlat = lat2 - lat1
+
+    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c
+
+def scoring_function(weights, sublet, sublease):
     score = 5.0
 
     call = sublease["sqft"] / sublet["sqft"]
     w1 = min(call, 1 / call)
-    score = score * w1 * sqrt(1 - 0.37 * weights["sqft"])
+    score = score * w1 * (1 - 0.37 * weights["sqft"])**.5
 
-    bounds = sublet["price"]
-    l = bounds["low"]
-    h = bounds["high"]
+    l = sublet["lowPrice"]
+    h = sublet["highPrice"]
     if sublease["price"] > h:
         w2 = 2 * (sublease["price"] - h) / (l + h)
-        score = score - w2 * sqrt(1 - 0.37 * weights["price"])
+        score = score - w2 * (1 - 0.37 * weights["price"])**.5
 
     if sublease["price"] < l:
         w2 = (l - sublease["price"]) / (l + h)
-        score = score - w2 * sqrt(1 - 0.37 * weights["price"])
+        score = score - w2 * (1 - 0.37 * weights["price"])**.5
 
     if sublet["bedroom"] > sublease["bedroom"]:
         score = score - 2 * (sublet["bedroom"] - sublease["bedroom"]) * weights["bedroom"]
@@ -117,18 +136,42 @@ def scoring_function(weights, sublet, sublease):
     if sublet["bedroom"] < sublease["bedroom"]:
         score = score - (sublease["bedroom"] - sublet["bedroom"]) * weights["bedroom"]
 
-    # score proximity of the paired couple if coordinates exists for each person
-    if "coordinates" in sublet and "coordinates" in sublease:
-        coord_inputs = {
-            "lat1": sublet["coordinates"]["lat"],
-            "lon1": sublet["coordinates"]["long"],
-            "lat2": sublease["coordinates"]["lat"],
-            "lon2": sublease["coordinates"]["long"],
-            "type": "miles"
-            }
-        distance = Algorithmia.algo("geo/GeoDistance").pipe(coord_inputs).result
-        score -= distance * weights["coordinates"]
+    # old coordinates
+    if "lat" in sublet and "lon" in sublease:
+        coord_inputs = (sublet["lat"], sublet["lon"], sublease["lat"], sublease["lon"])
+        distance = coords_distance(*coord_inputs)
+        if distance > sublet["range"]:
+            score -= 5
+        #score -= distance * weights["coordinates"]
+
+        res = api_additions(weights, sublet, sublease, score)
+
+    return res
 
 
+def api_additions(weights, sublet, sublease, score):
 
-    return score
+        lat = sublet["lat"]
+        lon = sublease["lon"]
+        restaurants = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={0},{1}&radius=2000&type=restaurant&keyword=chinese&key=AIzaSyBJsPR0hLvmnSgGu4u9KThHP0M7acYkFM0'.format(lat, lon)
+
+        count = len[restaurants]
+        score = score - 2 * weights["amenities"] / count^1.5
+
+        hos = max(weight["hospital"], 0.25)
+
+        hospitals = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={0},{1}&radius=(12000/hos)&type=restaurant&keyword=chinese&key=AIzaSyBJsPR0hLvmnSgGu4u9KThHP0M7acYkFM0'.format(lat, lon)
+        if len[hospitals] == 0:
+            score -= 1.2 * weight["hospital"]
+
+        address = sublease["address"]
+        loc = 'https://maps.googleapis.com/maps/api/geocode/json?address={0}&key=IzaSyBJsPR0hLvmnSgGu4u9KThHP0M7acYkFM0'.format(address)
+        ID = loc["place_id"]
+        result = 'https://maps.googleapis.com/maps/api/place/details/json?placeid={0}&key=AIzaSyBJsPR0hLvmnSgGu4u9KThHP0M7acYkFM0'.format(ID)
+
+        if result["rating"] != 'ZERO_RESULTS':
+            score = score * result["rating"] / 5
+
+        return score
+
+apply(example_input)
