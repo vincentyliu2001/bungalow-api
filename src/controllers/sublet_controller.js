@@ -33,14 +33,14 @@ const callPythonAlgo = async (sublets, filters) => {
   });
   const payload = {
     sublet: {
-      sqft: filters.footage || 1000,
-      lowPrice: filters.lowPrice || 0,
-      highPrice: filters.highPrice || 50000,
-      bedroom: filters.bedroom || 3,
-      bathroom: filters.bathroom || 2,
-      lat: filters.latitude || 0,
-      lon: filters.longitude || 0,
-      range: filters.range || 0,
+      sqft: filters ? filters.footage : 1000,
+      lowPrice: filters ? filters.lowPrice : 0,
+      highPrice: filters ? filters.highPrice : 50000,
+      bedroom: filters ? filters.bedroom : 3,
+      bathroom: filters ? filters.bathroom : 2,
+      lat: filters ? filters.latitude : 0,
+      lon: filters ? filters.longitude : 0,
+      range: filters ? filters.range : 0,
     },
     subleasers: subletsMapped,
   };
