@@ -4,45 +4,44 @@ import random, string
 
 example_input = {
     "sublet": {
-    "name": joe,
-    "sqft": 1000,
-    "price": {600,1000},
-    "bedroom": 3.0,
-    "coordinates": (75, 30)
-    }
-
+        "name": 'joe',
+        "sqft": 1000,
+        "price": {600,1000},
+        "bedroom": 3.0,
+        "coordinates": (75, 30),
+    },
     "subleasers": [
         {
-            "name": jim,
+            "name": 'jim',
             "sqft": 1000,
             "price": 900,
             "bedroom": 3.0,
-            "address": 2918 Ravensport Dr,
-            "coordinates": (75, 30.001)
+            "address": '2918 Ravensport Dr',
+            "coordinates": (75, 30.001),
         },
         {
-            "name": karen,
+            "name": 'karen',
             "sqft": 975,
             "price": 1100,
             "bedroom": 4.0,
-            "address": 2626 Salado Dr,
-            "coordinates": (75.042, 30.001)
-        }
+            "address": '2626 Salado Dr',
+            "coordinates": (75.042, 30.001),
+        },
         {
-        "name": pam,
+        "name": 'pam',
         "sqft" : 650,
         "price" : 625,
         "bedroom" : 2.0,
-        "address": 4734 Burclare Ct,
-        "coordinates" : (74.998, 30.007)
+        "address": '4734 Burclare Ct',
+        "coordinates" : (74.998, 30.007),
         }
     ],
     "scoring_weights": {
         "sqft": 1.0,
         "price range": 1.0,
         "bedroom": 1.0,
-        "coordinates": 1.0
-        "amenities": 0.3
+        "coordinates": 1.0,
+        "amenities": 0.3,
     }
 }
 
@@ -58,8 +57,8 @@ def apply(input):
         "sqft": 1.0,
         "price": 1.0,
         "bedroom": 1.0,
-        "coordinates": 1.0
-         "amenities": 0.3
+        "coordinates": 1.0,
+         "amenities": 0.3,
     }
     # overwrite the weights if given by user
     if "scoring_weights" in input:
@@ -112,10 +111,10 @@ def scoring_function(weights, sublet, sublease):
         w2 = (l - sublease["price"]) / (l + h)
         score = score - w2 * sqrt(1 - 0.37 * weights["price"])
 
-    if sublet["bedroom"] > sublease["bedroom"]
+    if sublet["bedroom"] > sublease["bedroom"]:
         score = score - 2 * (sublet["bedroom"] - sublease["bedroom"]) * weights["bedroom"]
 
-    if sublet["bedroom"] < sublease["bedroom"]
+    if sublet["bedroom"] < sublease["bedroom"]:
         score = score - (sublease["bedroom"] - sublet["bedroom"]) * weights["bedroom"]
 
     # score proximity of the paired couple if coordinates exists for each person
