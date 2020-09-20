@@ -49,8 +49,6 @@ const callPythonAlgo = async (sublets, filters) => {
     console.log('Failed to reach Matt\'s API', err);
   });
 
-  console.log('RESPONSE FROM MATT API', res);
-
   return res && res.data ? res.data : sublets; // axios uses .data not .body
 };
 
@@ -63,7 +61,24 @@ const getHomePageSublets = async (amount, seenIds, filters) => {
     },
   });
   // Call Matt's API on sublets to get them in sorted Order
-  const homes = callPythonAlgo(sublets, filters);
+  let homes = await callPythonAlgo(sublets, filters);
+  homes.sort((a, b) => {
+    return a[1] - b[1];
+  });
+
+  const getHomeSubletById = (subId) => {
+    const keys = Object.keys(sublets);
+    for (let i = 0; i < keys.length; i += 1) {
+      if (sublets[keys[i]].id === subId) {
+        return sublets[keys[i]];
+      }
+    }
+  };
+
+  homes = homes.map((subArray) => {
+    const id = subArray[0];
+    return getHomeSubletById(id);
+  });
 
   return homes.slice(0, amount || 10);
 };
