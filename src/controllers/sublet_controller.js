@@ -66,18 +66,9 @@ const getHomePageSublets = async (amount, seenIds, filters) => {
     return a[1] - b[1];
   });
 
-  const getHomeSubletById = (subId) => {
-    const keys = Object.keys(sublets);
-    for (let i = 0; i < keys.length; i += 1) {
-      if (sublets[keys[i]].id === subId) {
-        return sublets[keys[i]];
-      }
-    }
-  };
-
   homes = homes.map((subArray) => {
     const id = subArray[0];
-    return getHomeSubletById(id);
+    return sublets.find((sublet) => { return sublet.id === id; });
   });
 
   console.log("WHAT IS FOLLOWING THIS TEXT:", homes);
