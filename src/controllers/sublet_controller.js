@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 import Sublet from '../models/sublet_model';
 import User from '../models/user_model';
 
@@ -17,7 +19,13 @@ export const getSublet = (req, res) => {
 
 /* ********************************************************************************* */
 const getHomePageSublets = async (amount, seenIds) => {
-  const sublets = await Sublet.find({ id: { $nin: seenIds } }).sort('-createdAt').then();
+  const sublets = await Sublet.find({
+    _id: {
+      $nin: seenIds.map((id) => {
+        return mongoose.Types.ObjectId(id); // eslint-disable-line
+      }),
+    },
+  }).sort('-createdAt');
   return sublets.slice(0, amount || 10);
 };
 
@@ -32,17 +40,22 @@ export const getNewHomeItems = (req, res) => {
 
 /* ********************************************************************************* */
 const getSubletsWithIds = async (ids) => {
-  return Sublet.find({ id: { $in: ids } }).sort('-createdAt').then();
+  return Sublet.find({
+    _id: {
+      $in: ids.map((id) => {
+        return mongoose.Types.ObjectId(id); // eslint-disable-line
+      }),
+    },
+  }).sort('-createdAt');
 };
 
 const getInitSublets = async (req, res) => {
   const user = await User.findOne({ email: req.body.email }).then();
-  console.log('USER!!!!!!!!!!!!!!', user);
   const homeSublets = await getHomePageSublets(req.body.amount, user.seen);
   const allSublets = await Sublet.find().then();
   const likedSublets = await getSubletsWithIds(user.liked);
   const addedSublets = await getSubletsWithIds(user.posts);
-  console.log('AFTER MONGOSE QUERIES: ', addedSublets);
+
   return {
     liked: likedSublets,
     home: homeSublets,
