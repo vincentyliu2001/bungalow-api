@@ -64,9 +64,9 @@ const getHomePageSublets = async (amount, seenIds, filters) => {
   let homes = await callPythonAlgo(sublets, filters);
 
   console.log('NUMBER 1', homes);
-  homes = homes.sort((a, b) => {
-    return a[1] - b[1];
-  });
+  // homes = homes.sort((a, b) => {
+  //   return a[1] - b[1];
+  // });
   console.log('NUMBER 2', homes);
 
   homes = homes.map((subArray) => {
