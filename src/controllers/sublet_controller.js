@@ -25,7 +25,9 @@ const getHomePageSublets = async (amount, seenIds) => {
         return mongoose.Types.ObjectId(id); // eslint-disable-line
       }),
     },
-  }).sort('-createdAt');
+  });
+  // Call Matt's API on sublets to get them in sorted Order
+
   return sublets.slice(0, amount || 10);
 };
 
