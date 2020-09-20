@@ -45,9 +45,11 @@ const callPythonAlgo = async (sublets, filters) => {
     subleasers: subletsMapped,
   };
 
-  const res = await axios.post('URL', payload).catch((err) => {
+  const res = await axios.post('https://bungalow-algorithm.herokuapp.com/api/filterAlgo', payload).catch((err) => {
     console.log('Failed to reach Matt\'s API', err);
   });
+
+  console.log(res);
 
   return res && res.data ? res.data : sublets; // axios uses .data not .body
 };
