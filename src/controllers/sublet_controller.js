@@ -62,16 +62,19 @@ const getHomePageSublets = async (amount, seenIds, filters) => {
   });
   // Call Matt's API on sublets to get them in sorted Order
   let homes = await callPythonAlgo(sublets, filters);
+
+  console.log('NUMBER 1', homes);
   homes = homes.sort((a, b) => {
     return a[1] - b[1];
   });
+  console.log('NUMBER 2', homes);
 
   homes = homes.map((subArray) => {
     const id = subArray[0];
     return sublets.find((sublet) => { return sublet.id === id; });
   });
 
-  console.log("WHAT IS FOLLOWING THIS TEXT:", homes);
+  console.log('WHAT IS FOLLOWING THIS TEXT:', homes);
   return homes.slice(0, amount || 10);
 };
 
