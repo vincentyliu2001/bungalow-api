@@ -1,11 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 
 const FilterSchema = new Schema({
-  sqft: Number,
+  footage: Number,
   minPrice: Number,
   maxPrice: Number,
   bedroom: Number,
-  bathrooms: Number,
+  bathroom: Number,
   latitude: Number,
   longitude: Number,
   range: Number,
@@ -21,16 +21,6 @@ const UserSchema = new Schema({
   posts: [String],
   liked: [String],
   seen: [String],
-  preferences: {
-    minPrice: Number,
-    maxPrice: Number,
-    footage: Number,
-    bedroom: Number,
-    bathroom: Number,
-    latitude: Number,
-    longitude: Number,
-    range: Number,
-  },
   gid: String,
   filters: FilterSchema,
 },
