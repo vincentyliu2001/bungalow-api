@@ -10,7 +10,6 @@ export const getSublets = (req, res) => {
   });
 };
 export const getSublet = (req, res) => {
-  console.log(req.params.id);
   Sublet.findById(req.params.id).then((subletID) => {
     res.json(subletID);
   }).catch((error) => {
@@ -45,7 +44,7 @@ const callPythonAlgo = async (sublets, filters) => {
     subleasers: subletsMapped,
   };
 
-  const res = await axios.post('https://bungalow-algorithm.herokuapp.com/api/filterAlgo', payload).catch((err) => {
+  const res = await axios.post('https://bungalow-filter.herokuapp.com/api/filterAlgo', payload).catch((err) => {
     console.log('Failed to reach Matt\'s API', err);
   });
 
@@ -63,11 +62,9 @@ const getHomePageSublets = async (amount, seenIds, filters) => {
   // Call Matt's API on sublets to get them in sorted Order
   let homes = await callPythonAlgo(sublets, filters);
 
-  console.log('NUMBER 1', homes);
-  // homes = homes.sort((a, b) => {
-  //   return a[1] - b[1];
-  // });
-  console.log('NUMBER 2', homes);
+  homes = homes.sort((a, b) => {
+    return a[1] - b[1];
+  });
 
   homes = homes.map((subArray) => {
     const id = subArray[0];
