@@ -9,7 +9,8 @@
     "dev": "nodemon src/server.js --exec babel-node",
     "start": "babel-node src/server.js",
     "build": "babel src -d dist",
-    "prod": "yarn build; node dist/server.js"
+    "prod": "yarn build; node dist/server.js",
+    "genFakeSublets": "babel-node src/testing/generate.js"
   },
   "license": "ISC",
   "engines": {
@@ -26,6 +27,7 @@
     "@babel/core": "^7.10.5",
     "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
+    "axios": "^0.20.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",

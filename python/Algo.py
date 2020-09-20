@@ -143,12 +143,13 @@ def scoring_function(weights, sublet, sublease):
         distance = coords_distance(*coord_inputs)
         if distance > sublet["range"]:
             score -= 5
-        #score -= distance * weights["coordinates"]
+        score -= distance * weights["coordinates"]
 
         # res = api_additions(weights, sublet, sublease, score)
         #
         # return res
     return score
+
 
 # TODO
 def api_additions(weights, sublet, sublease, score):

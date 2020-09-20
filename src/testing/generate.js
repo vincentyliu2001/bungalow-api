@@ -37,8 +37,8 @@ const generateSublets = (email, iterations) => {
         ],
         email,
         name: randText(10),
-        latitude: 180 * Math.random() - 90,
-        longitude: 360 * Math.random() - 180,
+        latitude: Math.random() * (49.3 - 24.7) + 49.3,
+        longitude: Math.random() * (-124 + 66) - 124,
       },
     }, {
       json: () => {},
