@@ -2,12 +2,13 @@ import mongoose, { Schema } from 'mongoose';
 
 const FilterSchema = new Schema({
   sqft: Number,
-  price: Number,
+  minPrice: Number,
+  maxPrice: Number,
   bedroom: Number,
-  coordinates: Number,
-  amenities: Number,
-  Hospital: Number,
-  Range: Number,
+  bathrooms: Number,
+  latitude: Number,
+  longitude: Number,
+  range: Number,
 },
 {
   toObject: { virtuals: true },

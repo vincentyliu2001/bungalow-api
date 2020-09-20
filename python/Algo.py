@@ -7,7 +7,7 @@ example_input = {
     "name": 'joe',
     "sqft": 1000,
     "lowPrice": 600,
-    "highPrice": 100,
+    "highPrice": 1000,
     "bedroom": 3.0,
     "lat": 75,
     "lon": 30,
@@ -80,10 +80,11 @@ def apply(input):
     scoring_list = {}
     for sublease in input["subleasers"]:
             score = scoring_function(weights, input["sublet"], sublease)
-            if score >= 4:
+            if score:
                 scoring_list[sublease["address"]] = score
 
     sorted_list = sorted(scoring_list.items(), key=lambda x: x[1], reverse=True)
+    print(sorted_list)
 
 
 
@@ -114,21 +115,21 @@ def coords_distance(lat1, lon1, lat2, lon2):
     return R * c
 
 def scoring_function(weights, sublet, sublease):
-    score = 5.0
+    score = 10.0
 
     call = sublease["sqft"] / sublet["sqft"]
     w1 = min(call, 1 / call)
-    score = score * w1 * (1 - 0.37 * weights["sqft"])**.5
+    score = score * w1 * ((1 - 0.37 * weights["sqft"])**.5)
 
     l = sublet["lowPrice"]
     h = sublet["highPrice"]
     if sublease["price"] > h:
         w2 = 2 * (sublease["price"] - h) / (l + h)
-        score = score - w2 * (1 - 0.37 * weights["price"])**.5
+        score = score - w2 * ((1 - 0.37 * weights["price"])**.5)
 
     if sublease["price"] < l:
         w2 = (l - sublease["price"]) / (l + h)
-        score = score - w2 * (1 - 0.37 * weights["price"])**.5
+        score = score - w2 * ((1 - 0.37 * weights["price"])**.5)
 
     if sublet["bedroom"] > sublease["bedroom"]:
         score = score - 2 * (sublet["bedroom"] - sublease["bedroom"]) * weights["bedroom"]
@@ -144,11 +145,12 @@ def scoring_function(weights, sublet, sublease):
             score -= 5
         #score -= distance * weights["coordinates"]
 
-        res = api_additions(weights, sublet, sublease, score)
+        # res = api_additions(weights, sublet, sublease, score)
+        #
+        # return res
+    return score
 
-    return res
-
-
+# TODO
 def api_additions(weights, sublet, sublease, score):
 
         lat = sublet["lat"]

@@ -43,27 +43,27 @@ export const signin = (req, res, next) => {
   }).catch((e) => { res.status(400).send(e); });
 };
 
-export const updatePreferences = (req, res) => {
-  User.findOneAndUpdate(
-    { email: req.body.email },
-    {
-      preferences: {
-        minPrice: req.body.minPrice,
-        maxPrice: req.body.maxPrice,
-        footage: req.body.footage,
-        bedroom: req.body.bedroom,
-        bathroom: req.body.bathroom,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        range: req.body.range,
-      },
-    },
-  ).then(() => {
-    res.json({ status: 'success' });
-  }).catch((err) => {
-    console.log('Failed to Add to Liked: ', err);
-  });
-};
+// export const updatePreferences = (req, res) => {
+//   User.findOneAndUpdate(
+//     { email: req.body.email },
+//     {
+//       preferences: {
+//         minPrice: req.body.minPrice,
+//         maxPrice: req.body.maxPrice,
+//         footage: req.body.footage,
+//         bedroom: req.body.bedroom,
+//         bathroom: req.body.bathroom,
+//         latitude: req.body.latitude,
+//         longitude: req.body.longitude,
+//         range: req.body.range,
+//       },
+//     },
+//   ).then(() => {
+//     res.json({ status: 'success' });
+//   }).catch((err) => {
+//     console.log('Failed to Add to Liked: ', err);
+//   });
+// };
 
 export const getUser = (req, res) => {
   console.log(req.params.email);

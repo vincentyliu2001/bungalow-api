@@ -17,12 +17,11 @@ router.route('/access')
 router.route('/users/:email').get((req, res) => {
   UserController.getUser(req, res);
 });
-router.route('/users/preferences')
-  .post(requireAuth, UserController.updatePreferences);
+// router.route('/users/preferences')
+//   .post(requireAuth, UserController.updatePreferences);
 
-router.route('/users/filters').get((req, res) => {
-  UserController.addFilter(req, res);
-});
+router.route('/users/filters')
+  .post(requireAuth, UserController.addFilter);
 
 router.route('/sublets')
   .get(requireAuth, SubletsController.getSublets);
