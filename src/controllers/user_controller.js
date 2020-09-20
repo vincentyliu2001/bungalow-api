@@ -19,7 +19,7 @@ export const signin = (req, res, next) => {
         const newUser = new User();
         newUser.email = req.body.email;
         newUser.gid = payload.sub;
-        newUser.preferences = {
+        newUser.filters = {
           minPrice: 0,
           maxPrice: 99999,
           footage: 0,

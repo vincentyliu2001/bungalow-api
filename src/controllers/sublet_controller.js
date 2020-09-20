@@ -108,6 +108,7 @@ const getInitSublets = async (req, res) => {
     seen: user.seen,
     added: addedSublets,
     all: allSublets,
+    filters: user.filters,
   };
 };
 
