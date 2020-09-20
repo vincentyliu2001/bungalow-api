@@ -152,7 +152,7 @@ export const addSeen = (req, res) => {
 
 export const addFilter = (req, res) => {
   User.findOne({ email: req.body.email }).then((user) => {
-    user.filters = req.body;
+    user.filters = req.body.preferences;
     user.save().then(() => {
       res.json({ status: 'success' });
     });
