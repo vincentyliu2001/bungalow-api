@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import axios from 'axios';
 
 import Sublet from '../models/sublet_model';
 import User from '../models/user_model';
@@ -18,7 +19,40 @@ export const getSublet = (req, res) => {
 };
 
 /* ********************************************************************************* */
-const getHomePageSublets = async (amount, seenIds) => {
+const callPythonAlgo = async (sublets, filters) => {
+  const subletsMapped = sublets.map((sublet) => {
+    return {
+      name: sublet.name,
+      sqft: sublet.footage,
+      price: sublet.price,
+      bedroom: sublet.bedrooms,
+      address: sublet.id,
+      lat: sublet.latitude,
+      lon: sublet.longitude,
+    };
+  });
+  const payload = {
+    sublet: {
+      sqft: filters.footage,
+      lowPrice: filters.lowPrice,
+      highPrice: filters.highPrice,
+      bedroom: filters.bedroom,
+      bathroom: filters.bathroom,
+      lat: filters.latitude,
+      lon: filters.longitude,
+      range: filters.range,
+    },
+    subleasers: subletsMapped,
+  };
+
+  const res = await axios.post('URL', payload).catch((err) => {
+    console.log('Failed to reach Matt\'s API', err);
+  });
+
+  return res && res.data ? res.data : sublets; // axios uses .data not .body
+};
+
+const getHomePageSublets = async (amount, seenIds, filters) => {
   const sublets = await Sublet.find({
     _id: {
       $nin: seenIds.map((id) => {
@@ -27,13 +61,14 @@ const getHomePageSublets = async (amount, seenIds) => {
     },
   });
   // Call Matt's API on sublets to get them in sorted Order
+  const homes = callPythonAlgo(sublets, filters);
 
-  return sublets.slice(0, amount || 10);
+  return homes.slice(0, amount || 10);
 };
 
 export const getNewHomeItems = (req, res) => {
   User.findOne({ email: req.body.email }).then((user) => {
-    getHomePageSublets(req.body.amount, user.seen).then((sublets) => {
+    getHomePageSublets(req.body.amount, user.seen, user.filters).then((sublets) => {
       res.json(sublets);
     });
   });
