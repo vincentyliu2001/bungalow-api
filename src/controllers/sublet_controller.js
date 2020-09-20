@@ -49,7 +49,7 @@ const callPythonAlgo = async (sublets, filters) => {
     console.log('Failed to reach Matt\'s API', err);
   });
 
-  console.log(res);
+  console.log('RESPONSE FROM MATT API', res);
 
   return res && res.data ? res.data : sublets; // axios uses .data not .body
 };
