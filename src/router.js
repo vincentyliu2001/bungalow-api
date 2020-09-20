@@ -17,6 +17,8 @@ router.route('/access')
 router.route('/users/:email').get((req, res) => {
   UserController.getUser(req, res);
 });
+router.route('/users/preferences')
+  .post(requireAuth, UserController.updatePreferences);
 
 router.route('/sublets')
   .get(requireAuth, SubletsController.getSublets);

@@ -19,6 +19,16 @@ export const signin = (req, res, next) => {
         const newUser = new User();
         newUser.email = req.body.email;
         newUser.gid = payload.sub;
+        newUser.preferences = {
+          minPrice: 0,
+          maxPrice: 99999,
+          footage: 0,
+          bedroom: 0,
+          bathroom: 0,
+          latitude: 0,
+          longitude: 0,
+          range: 0,
+        };
         return newUser.save()
           .then((result) => {
             res.json({ jwt: tokenForUser(payload.sub) });
@@ -31,6 +41,28 @@ export const signin = (req, res, next) => {
       }
     });
   }).catch((e) => { res.status(400).send(e); });
+};
+
+export const updatePreferences = (req, res) => {
+  User.findOneAndUpdate(
+    { email: req.body.email },
+    {
+      preferences: {
+        minPrice: req.body.minPrice,
+        maxPrice: req.body.maxPrice,
+        footage: req.body.footage,
+        bedroom: req.body.bedroom,
+        bathroom: req.body.bathroom,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        range: req.body.range,
+      },
+    },
+  ).then(() => {
+    res.json({ status: 'success' });
+  }).catch((err) => {
+    console.log('Failed to Add to Liked: ', err);
+  });
 };
 
 export const getUser = (req, res) => {
